@@ -1,0 +1,4 @@
+proxy:
+  http://clash:7890
+port:
+  8085
