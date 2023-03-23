@@ -18,7 +18,7 @@ I do not guarantee such service to be stable, due to:
 2. I would ban access for any tendencies of malicious or illegal usage.
 
 # Limitation
-Only support a limit range of resouces. That makes your Blogger **LOOK** normal, but not indeed functions like one.
+Only support a limited range of resouces. That makes your Blogger **LOOK** normal, but not indeed functions like one.
 
 
 
