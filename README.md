@@ -24,7 +24,6 @@ Only support a limit range of resouces. That makes your Blogger **LOOK** normal,
 
     
     
-<br><br><br>
 
-
+# My Blogger
 Welcome to my Blogger [izumi.pro](https://blog.izumi.pro). You can even access it in **certain areas**!
