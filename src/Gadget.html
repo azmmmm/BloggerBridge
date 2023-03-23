@@ -1,0 +1,78 @@
+<script>
+    const domainsToReplace = ['blogblog.com', 'googleusercontent.com', 'blogger.com'];
+
+    // The new pattern to be added in front of the original URL
+    const newPattern = 'https://izumi.myrating.cn/proxy/';
+
+
+    //replace background photo in CSS
+    /*
+    in css, the url represent in url( https://something.com/something )
+    replace it with => url(${newPattern}${base64(https://something.com/something)})
+    which looks like : url(https://izumi.myrating.pro/proxy/aHR0cHM6Ly9ibG9nZ2VyLmdvb2dsZXVzZXJjb250ZW50LmNvbS9pbWcvYS9BVnZYc0VpZGRZdE9tcm54dkFYQ05JNjV5TjhBckw5WHZfVmdONkpTMldPb0k5WnI0MDkyaXpLYldYdVV3VE1KYWZNZTB5XzZWcVJ5LVpyOVpZVmE3MENzUXBfUDVLTFBhUnNCcDdtSkgtUmI3QU91RkgyVlVQQlcxSUcyaG4ydDRNanZoLWFZd0RVdHdocHVITS1yakQ2bkZCUUxsbVIzcG52ZVRBaFpqMzMxbGJ6VjBVT0c4WG4za0VsZGlIOGtsUT13MTIwMA==)
+    */
+    function replacePatternInCSS(str) {
+        const regex = new RegExp(`(url\\()((https?\\\\?:\\\\?\\/\\\\?\\/)(?:[^\\/]+\\.)*(?:${domainsToReplace.join('|')})[^\\)]*)\\)`, 'g');
+        // p1 :(url\\()
+        // p2 :( (https?\\\\?:\\\\?\\/\\\\?\\/)  (?:[^\\/]+\\.)*  (?:${domainsToReplace.join('|')})  [^\\)]*  )
+        return str.replace(regex, (match, p1, p2) => {
+            const unescapedURL = p2.replace(/\\:/g, ':').replace(/\\\//g, '/');
+            const base64URL = btoa(unescapedURL);
+            return `${p1}${newPattern}${base64URL})`;
+        });
+    }
+
+    // replace background photo in css
+    function repalceCSS() {
+        const styleElements = document.querySelectorAll('style');
+        styleElements.forEach(styleElement => {
+            styleElement.innerHTML = replacePatternInCSS(styleElement.innerHTML);
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', repalceCSS);
+
+
+    // replace js
+    function replacePatternInAttribute(str) {
+        const regex = new RegExp(`((https?:\\/\\/)(?:[^\\/]+\\.)*(?:${domainsToReplace.join('|')})([^"', ]*))`, 'g');
+        // (https?:\\/\\/)  (?:[^\\/]+\\.)*  (?:${domainsToReplace.join('|')})   ([^"']*)
+        return str.replace(regex, (match) => {
+            console.log(match)
+            const base64URL = btoa(match);
+            return `${newPattern}${base64URL}`;
+        });
+    }
+    function injectScript() {
+        const scriptElements = document.querySelectorAll('script[src]');
+        scriptElements.forEach(scriptElement => {
+            replacedUrl = replacePatternInAttribute(scriptElement.src);
+            scriptElement.src = replacedUrl
+
+            const newscriptElement = document.createElement('script');
+            newscriptElement.type = 'text/javascript';
+            newscriptElement.src = replacedUrl;
+            document.body.appendChild(newscriptElement);
+
+
+
+        });
+
+
+    }
+
+    document.addEventListener('DOMContentLoaded', injectScript);
+
+
+    //replace img tag
+    function injectImg() {
+        const imgElements = document.querySelectorAll('img[src]');
+        imgElements.forEach(imgElement => {
+            imgElement.src = replacePatternInAttribute(imgElement.src);
+            imgElement.srcset = replacePatternInAttribute(imgElement.srcset);
+        });
+    }
+    document.addEventListener('DOMContentLoaded', injectImg);
+
+
+</script>
