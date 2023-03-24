@@ -1,0 +1,48 @@
+name: Docker Image CD
+
+on:
+  workflow_dispatch:
+    inputs:
+      target_environment:
+        description: 'Target environment (e.g., main, dev)'
+        required: true
+
+jobs:
+  
+  
+  deploy:
+    runs-on: ubuntu-latest
+    env: 
+      BRANCH: ${{ github.event.inputs.target_environment }}
+
+
+    steps:
+      - name: SSH Remote Commands
+        uses: appleboy/ssh-action@v0.1.8
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            [ -d projects ] || mkdir projects
+            cd projects
+            [ -d ${{ github.repository }} ] || mkdir ${{ github.repository }}
+            cd ${{ github.repository }}
+            [ -d ${{env.BRANCH}} ] || mkdir ./${{env.BRANCH}}
+            cd ${{env.BRANCH}}
+
+            URL_WRAPPER_IMAGE_TAG="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.BRANCH }}"
+            docker pull $URL_WRAPPER_IMAGE_TAG
+
+            URL_WRAPPER_CONTAINER="url-wrapper_${{env.BRANCH}}"
+
+            if ! docker inspect $URL_WRAPPER_CONTAINER >/dev/null 2>&1; then
+              echo "Starting all services from scratch..."
+              docker-compose up -e EXPOSED_PORT=vars.EXPOSED_PORT -e BRANCH=env.BRANCH -d --force-recreate --remove-orphans
+            else
+              echo "Updating url-wrapper service..."
+              docker-compose down url-wrapper
+              docker-compose up -e EXPOSED_PORT=vars.EXPOSED_PORT -e BRANCH=env.BRANCH -d --force-recreate --remove-orphans --no-deps url-wrapper
+            fi
+
