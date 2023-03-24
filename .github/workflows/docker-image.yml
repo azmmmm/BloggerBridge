@@ -1,0 +1,24 @@
+name: Docker Image CD
+
+on:
+  push:
+    branches: [ "main" ,"dev"]
+
+jobs:
+  
+  build:
+    uses: ./.github/workflows/Docker-Image-CI.yml
+  
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: SSH Remote Commands
+        uses: appleboy/ssh-action@v0.1.8
+        with:
+          script: |
+            cd 
+            rm -r 
+            mkdir 
+            git pull
+            cd
+            ./start.sh
