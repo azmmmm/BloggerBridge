@@ -1,0 +1,22 @@
+name: Docker Image CD
+
+on:
+  push:
+    branches: [ "main","dev" ]
+
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: ./.github/workflows/Docker-Image-CI.yml
+    - name: Run the Docker image
+      run: |
+       docker compose \
+          --env-file ./config/docker-compose.env \
+          -e EXPOSED_PORT=${{env.EXPOSED_PORT}} \
+          -e BRANCH=${{GITHUB_REF_NAME}} \
+          up -d
