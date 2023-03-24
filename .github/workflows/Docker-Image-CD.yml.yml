@@ -25,12 +25,16 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script: |
+            cd ~
             [ -d projects ] || mkdir projects
             cd projects
             [ -d ${{ github.repository }} ] || mkdir ${{ github.repository }}
             cd ${{ github.repository }}
-            [ -d ${{env.BRANCH}} ] || mkdir ./${{env.BRANCH}}
+            [ -d ${{env.BRANCH}} ] || git clone -b ${{env.BRANCH}} git@github.com:azmmmm/BloggerBridge.git ./${{env.BRANCH}} 
             cd ${{env.BRANCH}}
+
+            git fetch --all
+            git reset --hard origin/${{env.BRANCH}}
 
             URL_WRAPPER_IMAGE_TAG="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.BRANCH }}"
             docker pull $URL_WRAPPER_IMAGE_TAG
