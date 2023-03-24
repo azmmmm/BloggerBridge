@@ -1,4 +1,6 @@
 proxy:
   http://clash:7890
+redis:
+  redis:6379
 port:
   8085
