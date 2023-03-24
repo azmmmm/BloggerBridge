@@ -2,7 +2,7 @@ FROM golang:1.20 AS build-stage
 WORKDIR /code
 COPY go.mod go.sum ./
 
-
+RUN go env -w GOPROXY=https://goproxy.cn
 RUN\
     --mount=type=cache,target=/var/cache/golang \
     go mod download
@@ -21,6 +21,8 @@ WORKDIR /code
 
 COPY --from=build-stage /code/wrapper ./wrapper
 COPY ./config ./config
+
+
 ENTRYPOINT [ "./wrapper" ]
 
 EXPOSE 8085
