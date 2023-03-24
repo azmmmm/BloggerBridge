@@ -10,13 +10,13 @@ jobs:
     uses: ./.github/workflows/Docker-Image-CI.yml
   run:
     runs-on: self-hosted
-
     steps:
     - uses: actions/checkout@v3
     - name: Run the Docker image
+      env:
+        EXPOSED_PORT: ${{ env.EXPOSED_PORT }}
+        BRANCH: ${{ github.ref_name }}
       run: |
-       docker compose \
+        docker compose \
           --env-file ./config/docker-compose.env \
-          -e EXPOSED_PORT=${{env.EXPOSED_PORT}} \
-          -e BRANCH=$GITHUB_REF_NAME \
           up -d
