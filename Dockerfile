@@ -22,6 +22,7 @@ WORKDIR /code
 COPY --from=build-stage /code/wrapper ./wrapper
 COPY ./config ./config
 
+ENV TZ=Asia/Shanghai
 
 ENTRYPOINT [ "./wrapper" ]
 
