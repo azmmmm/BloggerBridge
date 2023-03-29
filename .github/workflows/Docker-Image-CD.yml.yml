@@ -32,6 +32,8 @@ jobs:
           script: |
             echo "Starting script..."
 
+
+            ### Update and fetch from repository
             cd ~
             [ -d projects ] || mkdir projects
             cd projects
@@ -50,7 +52,7 @@ jobs:
             echo "Git fetch and reset complete."
 
             ### Update clash_config
-
+            wget -O /config/clash_config.yaml ${{secrets.CLASH_CONFIG_URL}}
 
             ### Build and run docker
 
