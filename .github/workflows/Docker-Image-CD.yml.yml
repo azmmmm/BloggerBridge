@@ -4,19 +4,16 @@ on:
   workflow_dispatch:
 
 jobs:
-  
-  
   deploy:
     runs-on: ubuntu-latest
-    env: 
-      BRANCH: ${{ github.head_ref.replace('refs/heads/', '') }}
+    env:
+      BRANCH: ${{ github.ref_name }}
       EXPOSED_PORT: ${{vars.EXPOSED_PORT}}
       REGISTRY: ghcr.io
       REPO: ${{github.repository}}
       IMAGE_NAME: ${{github.repository}}
 
     steps:
-
       - name: SSH Remote Commands
         uses: appleboy/ssh-action@v0.1.8
         with:
@@ -50,4 +47,3 @@ jobs:
               docker-compose down url-wrapper
               docker-compose up -d --force-recreate --remove-orphans --no-deps url-wrapper
             fi
-
