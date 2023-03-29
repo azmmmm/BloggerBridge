@@ -14,9 +14,12 @@ jobs:
     runs-on: ubuntu-latest
     env: 
       BRANCH: ${{ github.event.inputs.target_environment }}
-
+      EXPOSED_PORT: ${{vars.EXPOSED_PORT}}
+      REGISTRY: ghcr.io
+      IMAGE_NAME: ${{github.repository}}
 
     steps:
+
       - name: SSH Remote Commands
         uses: appleboy/ssh-action@v0.1.8
         with:
@@ -24,29 +27,30 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.SSH_PORT }}
+          envs: BRANCH,EXPOSED_PORT,IMAGE_NAME,REGISTRY
           script: |
             cd ~
             [ -d projects ] || mkdir projects
             cd projects
             [ -d ${{ github.repository }} ] || mkdir ${{ github.repository }}
             cd ${{ github.repository }}
-            [ -d ${{env.BRANCH}} ] || git clone -b ${{env.BRANCH}} git@github.com:azmmmm/BloggerBridge.git ./${{env.BRANCH}} 
-            cd ${{env.BRANCH}}
+            [ -d ${BRANCH} ] || git clone -b ${BRANCH} git@github.com:azmmmm/BloggerBridge.git ./${BRANCH} 
+            cd ${BRANCH}
 
             git fetch --all
-            git reset --hard origin/${{env.BRANCH}}
+            git reset --hard origin/${BRANCH}
 
-            URL_WRAPPER_IMAGE_TAG="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.BRANCH }}"
+            URL_WRAPPER_IMAGE_TAG="${REGISTRY}/${IMAGE_NAME}:${BRANCH}"
             docker pull $URL_WRAPPER_IMAGE_TAG
 
-            URL_WRAPPER_CONTAINER="url-wrapper_${{env.BRANCH}}"
+            URL_WRAPPER_CONTAINER="url-wrapper_${BRANCH}"
 
             if ! docker inspect $URL_WRAPPER_CONTAINER >/dev/null 2>&1; then
               echo "Starting all services from scratch..."
-              docker-compose up -e EXPOSED_PORT=vars.EXPOSED_PORT -e BRANCH=env.BRANCH -d --force-recreate --remove-orphans
+              docker-compose up -d --force-recreate --remove-orphans
             else
               echo "Updating url-wrapper service..."
               docker-compose down url-wrapper
-              docker-compose up -e EXPOSED_PORT=vars.EXPOSED_PORT -e BRANCH=env.BRANCH -d --force-recreate --remove-orphans --no-deps url-wrapper
+              docker-compose up -d --force-recreate --remove-orphans --no-deps url-wrapper
             fi
 
