@@ -9,8 +9,9 @@ jobs:
     env:
       BRANCH: ${{ github.ref_name }}
       EXPOSED_PORT: ${{vars.EXPOSED_PORT}}
+      WORKING_DIR: ${{ github.repository_owner }}_${{ github.repository_name }}
+
       REGISTRY: ghcr.io
-      REPO: ${{ github.repository_owner }}_${{ github.repository_name }}
       IMAGE_NAME: ${{github.repository}}
 
     steps:
@@ -21,14 +22,14 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
-          envs: BRANCH,EXPOSED_PORT,REPO,IMAGE_NAME,REGISTRY
+          envs: BRANCH,EXPOSED_PORT,WORKING_DIR,IMAGE_NAME,REGISTRY
           script: |
             cd ~
             [ -d projects ] || mkdir projects
             cd projects
-            [ -d ${REPO} ] || mkdir "${REPO}"
-            cd ${REPO}
-            [ -d ${BRANCH} ] || git clone -b ${BRANCH} git@${REPO}.git ./${BRANCH} 
+            [ -d ${WORKING_DIR} ] || mkdir "${WORKING_DIR}"
+            cd ${WORKING_DIR}
+            [ -d ${BRANCH} ] || git clone -b ${BRANCH} git@${IMAGE_NAME}.git ./${BRANCH} 
             cd ${BRANCH}
 
             git fetch --all
