@@ -24,27 +24,39 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           envs: BRANCH,EXPOSED_PORT,WORKING_DIR,IMAGE_NAME,REGISTRY
           script: |
+            echo "Starting script..."
+
             cd ~
             [ -d projects ] || mkdir projects
             cd projects
+
             [ -d ${WORKING_DIR} ] || mkdir "${WORKING_DIR}"
             cd ${WORKING_DIR}
-            [ -d ${BRANCH} ] || git clone -b ${BRANCH} https://github.com/${IMAGE_NAME}.git ./${BRANCH} 
+            echo "Changed directory to ${WORKING_DIR}."
+
+            [ -d ${BRANCH} ] || git clone -b ${BRANCH} https://github.com/${IMAGE_NAME}.git ./${BRANCH}
             cd ${BRANCH}
+            echo "Changed directory to ${BRANCH}."
 
             git fetch --all
             git reset --hard origin/${BRANCH}
+            echo "Git fetch and reset complete."
 
             URL_WRAPPER_IMAGE_TAG="${REGISTRY}/${IMAGE_NAME}:${BRANCH}"
             docker pull $URL_WRAPPER_IMAGE_TAG
+            echo "Docker image pulled: ${URL_WRAPPER_IMAGE_TAG}"
 
             URL_WRAPPER_CONTAINER="url-wrapper_${BRANCH}"
 
             if ! docker inspect $URL_WRAPPER_CONTAINER >/dev/null 2>&1; then
               echo "Starting all services from scratch..."
               docker-compose up -d --force-recreate --remove-orphans
+              echo "All services started from scratch."
             else
               echo "Updating url-wrapper service..."
               docker-compose down url-wrapper
               docker-compose up -d --force-recreate --remove-orphans --no-deps url-wrapper
+              echo "Url-wrapper service updated."
             fi
+
+            echo "Script complete."
