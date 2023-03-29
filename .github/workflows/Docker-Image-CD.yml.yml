@@ -16,6 +16,7 @@ jobs:
       BRANCH: ${{ github.event.inputs.target_environment }}
       EXPOSED_PORT: ${{vars.EXPOSED_PORT}}
       REGISTRY: ghcr.io
+      REPO: ${{github.repository}}
       IMAGE_NAME: ${{github.repository}}
 
     steps:
@@ -24,17 +25,17 @@ jobs:
         uses: appleboy/ssh-action@v0.1.8
         with:
           host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USERNAME }}
-          key: ${{ secrets.SSH_KEY }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
-          envs: BRANCH,EXPOSED_PORT,IMAGE_NAME,REGISTRY
+          envs: BRANCH,EXPOSED_PORT,REPO,IMAGE_NAME,REGISTRY
           script: |
             cd ~
             [ -d projects ] || mkdir projects
             cd projects
-            [ -d ${{ github.repository }} ] || mkdir ${{ github.repository }}
-            cd ${{ github.repository }}
-            [ -d ${BRANCH} ] || git clone -b ${BRANCH} git@github.com:azmmmm/BloggerBridge.git ./${BRANCH} 
+            [ -d ${REPO} ] || mkdir ${REPO}}
+            cd ${REPO}
+            [ -d ${BRANCH} ] || git clone -b ${BRANCH} git@${REPO}.git ./${BRANCH} 
             cd ${BRANCH}
 
             git fetch --all
