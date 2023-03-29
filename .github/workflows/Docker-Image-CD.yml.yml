@@ -52,7 +52,7 @@ jobs:
             echo "Git fetch and reset complete."
 
             ### Update clash_config
-            wget -O /config/clash_config.yaml ${{secrets.CLASH_CONFIG_URL}}
+            wget -O ./config/clash_config.yaml ${{secrets.CLASH_CONFIG_URL}}
 
             ### Build and run docker
 
