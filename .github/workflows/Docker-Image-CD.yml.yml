@@ -45,11 +45,11 @@ jobs:
             echo "Git fetch and reset complete."
 
             URL_WRAPPER_IMAGE_TAG="${REGISTRY}/${IMAGE_NAME}:${BRANCH}"
-            URL_WRAPPER_IMAGE_TAG=$(echo $URL_WRAPPER_IMAGE_TAG | tr '[:upper:]' '[:lower:]')
+            URL_WRAPPER_IMAGE_TAG=$(echo ${URL_WRAPPER_IMAGE_TAG} | tr '[:upper:]' '[:lower:]')
             docker pull $URL_WRAPPER_IMAGE_TAG
             echo "Docker image pulled: ${URL_WRAPPER_IMAGE_TAG}"
 
-
+            IMAGE_NAME=$(echo ${IMAGE_NAME} | tr '[:upper:]' '[:lower:]')
             echo "Updating url-wrapper service..."
             docker compose down
             docker compose up -d --build
