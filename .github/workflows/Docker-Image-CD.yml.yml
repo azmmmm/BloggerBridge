@@ -10,6 +10,7 @@ jobs:
       BRANCH: ${{ github.ref_name }}
       EXPOSED_PORT: ${{vars.EXPOSED_PORT}}
       WORKING_DIR: ${{ github.repository_owner }}_${{ github.repository_name }}
+      CLONE_URL: https://github.com/${{github.repository}}.git
 
       REGISTRY: ghcr.io
       IMAGE_NAME: ${{github.repository}}
@@ -22,7 +23,7 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
-          envs: BRANCH,EXPOSED_PORT,WORKING_DIR,IMAGE_NAME,REGISTRY
+          envs: BRANCH,EXPOSED_PORT,WORKING_DIR,IMAGE_NAME,REGISTRY,CLONE_URL
           script: |
             echo "Starting script..."
 
@@ -34,7 +35,7 @@ jobs:
             cd ${WORKING_DIR}
             echo "Changed directory to ${WORKING_DIR}."
 
-            [ -d ${BRANCH} ] || git clone -b ${BRANCH} https://github.com/${IMAGE_NAME}.git ./${BRANCH}
+            [ -d ${BRANCH} ] || git clone -b ${BRANCH} ${CLONE_URL} ./${BRANCH}
             cd ${BRANCH}
             echo "Changed directory to ${BRANCH}."
 
