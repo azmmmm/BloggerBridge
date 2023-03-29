@@ -10,7 +10,7 @@ jobs:
       BRANCH: ${{ github.ref_name }}
       EXPOSED_PORT: ${{vars.EXPOSED_PORT}}
       REGISTRY: ghcr.io
-      REPO: ${{github.repository}}
+      REPO: ${{ github.repository_owner }}_${{ github.repository_name }}
       IMAGE_NAME: ${{github.repository}}
 
     steps:
@@ -26,7 +26,7 @@ jobs:
             cd ~
             [ -d projects ] || mkdir projects
             cd projects
-            [ -d ${REPO} ] || mkdir ${REPO}
+            [ -d ${REPO} ] || mkdir "${REPO}"
             cd ${REPO}
             [ -d ${BRANCH} ] || git clone -b ${BRANCH} git@${REPO}.git ./${BRANCH} 
             cd ${BRANCH}
