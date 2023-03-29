@@ -25,7 +25,7 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           envs: BRANCH,EXPOSED_PORT,WORKING_DIR,IMAGE_NAME,REGISTRY,CLONE_URL
           script: |
-            env >> mylog.txt
+            env | tee mylog.txt
             echo "Starting script..."
 
             cd ~
