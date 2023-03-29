@@ -32,7 +32,8 @@ jobs:
           script: |
             echo "Starting script..."
             
-            # this code is due to ssh-action@v0.1.8 won't inherit any env var in /etc/profile or ~/.bashrc
+            # this code is due to ssh-action@v0.1.8 run a non-login shell and won't inherit any env var in /etc/profile or ~/.bashrc
+            exec bash \-l
             ~/set_proxy
             env 
             wget youtube.com
@@ -66,3 +67,4 @@ jobs:
             docker compose up -d --build
             echo "start listening on ${EXPOSED_PORT}"
             docker image prune -f
+        
