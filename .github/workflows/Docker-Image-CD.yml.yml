@@ -32,8 +32,9 @@ jobs:
           script: |
             echo "Starting script..."
             
-            source ~/.bashrc
-            env | tee mylog
+            # this code is due to ssh-action@v0.1.8 won't inherit any env var in /etc/profile or ~/.bashrc
+            ~/set_proxy
+            env 
 
             ### Update and fetch from repository
             cd ~
