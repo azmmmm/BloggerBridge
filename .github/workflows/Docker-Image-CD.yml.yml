@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       BRANCH: ${{ github.ref_name }}
-      EXPOSED_PORT: ${{vars.EXPOSED_PORT}}
+      EXPOSED_PORT: ${{vars.EXPOSED_PORT || 8085}}
       WORKING_DIR: ${{ github.repository_owner }}_${{ github.repository_name }}
       CLONE_URL: https://github.com/${{github.repository}}.git
 
