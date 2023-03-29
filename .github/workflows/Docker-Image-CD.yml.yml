@@ -18,7 +18,7 @@ jobs:
       - name: Get repository meta info.
         id: meta
         run : |
-          echo "repository_name=$(basename ${{ github.repository }})" >> $GITHUB_ENV
+          echo "repository_name=$(basename ${{ github.repository }})" >> $GITHUB_OUTPUT
         shell: bash
 
       - name: SSH Remote Commands
