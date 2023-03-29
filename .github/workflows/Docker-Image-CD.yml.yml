@@ -60,4 +60,5 @@ jobs:
             echo "Updating url-wrapper service..."
             docker compose down
             docker compose up -d --build
+            echo "start listening on ${EXPOSED_PORT}"
             docker image prune -f
