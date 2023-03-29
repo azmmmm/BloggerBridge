@@ -1,27 +1,32 @@
 services:
   clash:
     image: dreamacro/clash
-    container_name: clash
+    container_name: clash_${BRANCH}
     volumes:
       - ./config/clash_config.yaml:/root/.config/clash/config.yaml
  
     restart: unless-stopped
     networks:
       - wrapper_net 
-
+  
+  redis:
+    image: redis:latest
+    container_name: redis_${BRANCH}
+    restart: unless-stopped
+    networks:
+      - wrapper_net
 
   url-wrapper:
-    container_name: url-wrapper
-    build: 
-      context: .
-      dockerfile: Dockerfile 
+    container_name: url-wrapper_${BRANCH}
+    image: ghcr.io/${IMAGE_NAME}:${BRANCH}
 
     ports:
-      - "8085:8085"
+      - "${EXPOSED_PORT}:8085"
     networks:
       - wrapper_net
     depends_on:
       - clash
+      - redis
       
 
   
