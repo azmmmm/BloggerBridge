@@ -39,7 +39,7 @@ jobs:
             cd ${BRANCH}
             echo "Changed directory to ${BRANCH}."
 
-            git fetch --all --verbose
+            git fetch --all --verbose | tee mylog.txt
             git reset --hard origin/${BRANCH}
             echo "Git fetch and reset complete."
 
@@ -50,15 +50,7 @@ jobs:
 
             URL_WRAPPER_CONTAINER="url-wrapper_${BRANCH}"
 
-            if ! docker inspect $URL_WRAPPER_CONTAINER >/dev/null 2>&1; then
-              echo "Starting all services from scratch..."
-              docker-compose up -d --force-recreate --remove-orphans
-              echo "All services started from scratch."
-            else
-              echo "Updating url-wrapper service..."
-              docker-compose down url-wrapper
-              docker-compose up -d --force-recreate --remove-orphans --no-deps url-wrapper
-              echo "Url-wrapper service updated."
-            fi
-
-            echo "Script complete."
+            echo "Updating url-wrapper service..."
+            docker compose down
+            docker compose up -d url-wrapper
+            docker image prune -f
