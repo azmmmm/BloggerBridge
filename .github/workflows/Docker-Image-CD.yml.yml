@@ -25,6 +25,7 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           envs: BRANCH,EXPOSED_PORT,WORKING_DIR,IMAGE_NAME,REGISTRY,CLONE_URL
           script: |
+            env >> mylog.txt
             echo "Starting script..."
 
             cd ~
@@ -48,9 +49,8 @@ jobs:
             docker pull $URL_WRAPPER_IMAGE_TAG
             echo "Docker image pulled: ${URL_WRAPPER_IMAGE_TAG}"
 
-            URL_WRAPPER_CONTAINER="url-wrapper_${BRANCH}"
 
             echo "Updating url-wrapper service..."
             docker compose down
-            docker compose up -d url-wrapper
+            docker compose up -d --build
             docker image prune -f
