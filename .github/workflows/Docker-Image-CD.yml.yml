@@ -31,7 +31,9 @@ jobs:
           envs: BRANCH,EXPOSED_PORT,IMAGE_NAME
           script: |
             echo "Starting script..."
-
+            
+            source ~/.bashrc
+            env | tee mylog
 
             ### Update and fetch from repository
             cd ~
