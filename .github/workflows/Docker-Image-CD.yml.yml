@@ -35,15 +35,16 @@ jobs:
             cd ${WORKING_DIR}
             echo "Changed directory to ${WORKING_DIR}."
 
-            [ -d ${BRANCH} ] || git clone -b ${BRANCH} ${CLONE_URL} ./${BRANCH}
+            [ -d ${BRANCH} ] || git clone -b ${BRANCH} ${CLONE_URL} ./${BRANCH} && echo "fetching ${BRANCH} from ${CLONE_URL}"
             cd ${BRANCH}
             echo "Changed directory to ${BRANCH}."
 
-            git fetch --all
+            git fetch --all --verbose
             git reset --hard origin/${BRANCH}
             echo "Git fetch and reset complete."
 
             URL_WRAPPER_IMAGE_TAG="${REGISTRY}/${IMAGE_NAME}:${BRANCH}"
+            URL_WRAPPER_IMAGE_TAG=$(echo $URL_WRAPPER_IMAGE_TAG | tr '[:upper:]' '[:lower:]')
             docker pull $URL_WRAPPER_IMAGE_TAG
             echo "Docker image pulled: ${URL_WRAPPER_IMAGE_TAG}"
 
