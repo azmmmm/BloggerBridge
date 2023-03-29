@@ -7,15 +7,20 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     env:
-      BRANCH: ${{ github.ref_name }}
-      EXPOSED_PORT: ${{vars.EXPOSED_PORT || 8085}}
-      WORKING_DIR: ${{ github.repository_owner }}_${{ github.repository_name }}
       CLONE_URL: https://github.com/${{github.repository}}.git
 
-      REGISTRY: ghcr.io
+
+      BRANCH: ${{ github.ref_name }}
+      EXPOSED_PORT: ${{vars.EXPOSED_PORT || 8085}}
       IMAGE_NAME: ${{github.repository}}
 
     steps:
+      - name: Get repository meta info.
+        id: meta
+        run : |
+          echo "repository_name=$(basename ${{ github.repository }})" >> $GITHUB_ENV
+        shell: bash
+
       - name: SSH Remote Commands
         uses: appleboy/ssh-action@v0.1.8
         with:
@@ -23,20 +28,20 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
-          envs: BRANCH,EXPOSED_PORT,WORKING_DIR,IMAGE_NAME,REGISTRY,CLONE_URL
+          envs: BRANCH,EXPOSED_PORT,IMAGE_NAME
           script: |
-            env | tee mylog.txt
             echo "Starting script..."
 
             cd ~
             [ -d projects ] || mkdir projects
             cd projects
 
+            WORKING_DIR=${{ github.repository_owner }}_${{ steps.META.outputs.repository_name }}
             [ -d ${WORKING_DIR} ] || mkdir "${WORKING_DIR}"
             cd ${WORKING_DIR}
             echo "Changed directory to ${WORKING_DIR}."
 
-            [ -d ${BRANCH} ] || git clone -b ${BRANCH} ${CLONE_URL} ./${BRANCH} && echo "fetching ${BRANCH} from ${CLONE_URL}"
+            [ -d ${BRANCH} ] || git clone -b ${BRANCH} ${{env.CLONE_URL}} ./${BRANCH} && echo "fetching ${BRANCH} from ${{env.CLONE_URL}}"
             cd ${BRANCH}
             echo "Changed directory to ${BRANCH}."
 
@@ -44,10 +49,10 @@ jobs:
             git reset --hard origin/${BRANCH}
             echo "Git fetch and reset complete."
 
-            URL_WRAPPER_IMAGE_TAG="${REGISTRY}/${IMAGE_NAME}:${BRANCH}"
-            URL_WRAPPER_IMAGE_TAG=$(echo ${URL_WRAPPER_IMAGE_TAG} | tr '[:upper:]' '[:lower:]')
-            docker pull $URL_WRAPPER_IMAGE_TAG
-            echo "Docker image pulled: ${URL_WRAPPER_IMAGE_TAG}"
+            ### Update clash_config
+
+
+            ### Build and run docker
 
             IMAGE_NAME=$(echo ${IMAGE_NAME} | tr '[:upper:]' '[:lower:]')
             echo "Updating url-wrapper service..."
