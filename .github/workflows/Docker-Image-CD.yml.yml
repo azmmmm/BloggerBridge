@@ -29,7 +29,7 @@ jobs:
             cd projects
             [ -d ${WORKING_DIR} ] || mkdir "${WORKING_DIR}"
             cd ${WORKING_DIR}
-            [ -d ${BRANCH} ] || git clone -b ${BRANCH} git@github.com:${IMAGE_NAME}.git ./${BRANCH} 
+            [ -d ${BRANCH} ] || git clone -b ${BRANCH} https://github.com/${IMAGE_NAME}.git ./${BRANCH} 
             cd ${BRANCH}
 
             git fetch --all
