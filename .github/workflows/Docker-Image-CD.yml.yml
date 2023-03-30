@@ -31,11 +31,10 @@ jobs:
           envs: BRANCH,EXPOSED_PORT,IMAGE_NAME
           script: |
             
+            
             bash -l -c "$(cat <<- EOF
             # this code is due to ssh-action@v0.1.8 run a non-login shell and won't inherit any env var in /etc/profile or ~/.bashrc
-            # using a here-document to get a login shell
-            
-            
+
 
             ### Update and fetch from repository
             cd ~
@@ -67,6 +66,6 @@ jobs:
             echo "start listening on ${EXPOSED_PORT}"
             docker image prune -f
         
-            # this code is the close of previous " bash -l -c "$(cat <<- EOF "
+            # this code is the close of previous bash -l -c 
             EOF
             )"
