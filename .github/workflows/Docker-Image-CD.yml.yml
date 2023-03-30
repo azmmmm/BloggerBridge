@@ -31,9 +31,9 @@ jobs:
           envs: BRANCH,EXPOSED_PORT,IMAGE_NAME
           script: |
             
-            export PROJECT_NAME=${{ github.repository_owner }}_${{ steps.META.outputs.repository_name }}
             
-            bash -l -c "$(cat <<- EOF
+            
+            bash -l -c `
             ### this code is due to ssh-action@v0.1.8 run a non-login shell and won't inherit any env var in /etc/profile or ~/.bashrc
 
 
@@ -42,6 +42,7 @@ jobs:
             [ -d projects ] || mkdir projects
             cd projects
 
+            export PROJECT_NAME=${{ github.repository_owner }}_${{ steps.META.outputs.repository_name }}
             [ -d ${PROJECT_NAME} ] || mkdir "${PROJECT_NAME}"
             cd ${PROJECT_NAME}
             echo "Changed directory to ${PROJECT_NAME}."
@@ -50,7 +51,7 @@ jobs:
             cd ${BRANCH}
             echo "Changed directory to ${BRANCH}."
 
-            git fetch --all --verbose | tee mylog.txt
+            git fetch --all --verbose 
             git reset --hard origin/${BRANCH}
             echo "Git fetch and reset complete."
 
@@ -59,13 +60,13 @@ jobs:
 
             ### Build and run docker
 
-            IMAGE_NAME=$(echo ${IMAGE_NAME} | tr '[:upper:]' '[:lower:]')
+            export IMAGE_NAME=$(echo ${IMAGE_NAME} | tr '[:upper:]' '[:lower:]')
             echo "Updating ${IMAGE_NAME} service..."
             docker compose down
             docker compose up -d --build
             echo "start listening on ${EXPOSED_PORT}"
             docker image prune -f
         
-            # this code is the close of previous bash -l -c 
-            EOF
-            )"
+            
+            # this is the close of previous bash -l -c 
+            `
