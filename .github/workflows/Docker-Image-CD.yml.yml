@@ -30,10 +30,10 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           envs: BRANCH,EXPOSED_PORT,IMAGE_NAME
           script: |
-            echo "Starting script..."
             
+            
+            exec bash \-l
             # this code is due to ssh-action@v0.1.8 run a non-login shell and won't inherit any env var in /etc/profile or ~/.bashrc
-            exec bash 
             env | tee mylog
             wget youtube.com
 
