@@ -5,7 +5,7 @@ on:
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    runs-on:  ubuntu-latest
     env:
       CLONE_URL: https://github.com/${{github.repository}}.git
 
@@ -33,9 +33,8 @@ jobs:
             echo "Starting script..."
             
             # this code is due to ssh-action@v0.1.8 run a non-login shell and won't inherit any env var in /etc/profile or ~/.bashrc
-            exec bash \-l
-            ~/set_proxy
-            env 
+            exec bash 
+            env | tee mylog
             wget youtube.com
 
             ### Update and fetch from repository
