@@ -60,7 +60,7 @@ jobs:
             ### Build and run docker
 
             IMAGE_NAME=$(echo ${IMAGE_NAME} | tr '[:upper:]' '[:lower:]')
-            echo "Updating url-wrapper service..."
+            echo "Updating ${IMAGE_NAME} service..."
             docker compose down
             docker compose up -d --build
             echo "start listening on ${EXPOSED_PORT}"
