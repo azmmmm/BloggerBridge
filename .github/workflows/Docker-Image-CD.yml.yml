@@ -31,7 +31,8 @@ jobs:
           envs: BRANCH,EXPOSED_PORT,IMAGE_NAME
           script: |
             
-            
+            export PROJECT_NAME=${{ github.repository_owner }}_${{ steps.META.outputs.repository_name }}
+
             bash -l -c "$(cat <<- EOF
             ### this code is due to ssh-action@v0.1.8 run a non-login shell and won't inherit any env var in /etc/profile or ~/.bashrc
 
@@ -41,7 +42,7 @@ jobs:
             [ -d projects ] || mkdir projects
             cd projects
 
-            PROJECT_NAME=${{ github.repository_owner }}_${{ steps.META.outputs.repository_name }}
+            
             [ -d ${PROJECT_NAME} ] || mkdir "${PROJECT_NAME}"
             cd ${PROJECT_NAME}
             echo "Changed directory to ${PROJECT_NAME}."
