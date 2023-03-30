@@ -33,7 +33,7 @@ jobs:
             
             
             bash -l -c "$(cat <<- EOF
-            # this code is due to ssh-action@v0.1.8 run a non-login shell and won't inherit any env var in /etc/profile or ~/.bashrc
+            ### this code is due to ssh-action@v0.1.8 run a non-login shell and won't inherit any env var in /etc/profile or ~/.bashrc
 
 
             ### Update and fetch from repository
@@ -41,10 +41,10 @@ jobs:
             [ -d projects ] || mkdir projects
             cd projects
 
-            WORKING_DIR=${{ github.repository_owner }}_${{ steps.META.outputs.repository_name }}
-            [ -d ${WORKING_DIR} ] || mkdir "${WORKING_DIR}"
-            cd ${WORKING_DIR}
-            echo "Changed directory to ${WORKING_DIR}."
+            PROJECT_NAME=${{ github.repository_owner }}_${{ steps.META.outputs.repository_name }}
+            [ -d ${PROJECT_NAME} ] || mkdir "${PROJECT_NAME}"
+            cd ${PROJECT_NAME}
+            echo "Changed directory to ${PROJECT_NAME}."
 
             [ -d ${BRANCH} ] || git clone -b ${BRANCH} ${{env.CLONE_URL}} ./${BRANCH} && echo "fetching ${BRANCH} from ${{env.CLONE_URL}}"
             cd ${BRANCH}
