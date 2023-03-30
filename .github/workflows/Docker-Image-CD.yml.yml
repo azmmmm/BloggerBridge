@@ -32,8 +32,9 @@ jobs:
           script: |
             
             
-            exec bash \-l
+            bash -l -c "$(cat <<- EOF
             # this code is due to ssh-action@v0.1.8 run a non-login shell and won't inherit any env var in /etc/profile or ~/.bashrc
+            
             env | tee mylog
             wget youtube.com
 
@@ -67,3 +68,6 @@ jobs:
             echo "start listening on ${EXPOSED_PORT}"
             docker image prune -f
         
+
+            EOF
+            )"
