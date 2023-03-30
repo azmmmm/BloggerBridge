@@ -10,6 +10,12 @@ on:
     branches: [ "main","dev" ]
     # Publish semver tags as releases.
     tags: [ 'v*.*.*' ]
+    paths-ignore:
+      - '.github/**'
+      - 'config/**'
+      - 'LICENSE'
+      - 'README.md'
+      - 'docker-compose.yaml'  
   pull_request:
     branches: [ "main","dev" ]
   workflow_dispatch:
