@@ -32,6 +32,7 @@ jobs:
           script: |
             
             # this code is due to ssh-action@v0.1.8 run a non-login shell and won't inherit any env var in /etc/profile or ~/.bashrc
+            # using a here-document to get a login shell
             bash -l -c "$(cat <<- EOF
             
 
