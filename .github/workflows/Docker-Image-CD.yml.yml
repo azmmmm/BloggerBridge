@@ -35,7 +35,7 @@ jobs:
             
             bash -l -c "$(cat <<- 'EOF'
             ### this code is due to ssh-action@v0.1.8 run a non-login shell and won't inherit any env var in /etc/profile or ~/.bashrc
-
+            ### and using a here-document with single-quoted delimiter, so that variable will be expanded in the bash, not before.
 
             ### Update and fetch from repository
             cd ~
