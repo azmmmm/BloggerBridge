@@ -33,7 +33,7 @@ jobs:
             
             
             
-            bash -l -c `
+            bash -l -c "$(cat <<- 'EOF'
             ### this code is due to ssh-action@v0.1.8 run a non-login shell and won't inherit any env var in /etc/profile or ~/.bashrc
 
 
@@ -43,30 +43,30 @@ jobs:
             cd projects
 
             export PROJECT_NAME=${{ github.repository_owner }}_${{ steps.META.outputs.repository_name }}
-            [ -d ${PROJECT_NAME} ] || mkdir \"${PROJECT_NAME}\"
+            [ -d ${PROJECT_NAME} ] || mkdir "${PROJECT_NAME}"
             cd ${PROJECT_NAME}
-            echo \"Changed directory to ${PROJECT_NAME}.\"
+            echo "Changed directory to ${PROJECT_NAME}."
 
-            [ -d ${BRANCH} ] || git clone -b ${BRANCH} ${{env.CLONE_URL}} ./${BRANCH} && echo \"fetching ${BRANCH} from ${{env.CLONE_URL}}\"
+            [ -d ${BRANCH} ] || git clone -b ${BRANCH} ${{env.CLONE_URL}} ./${BRANCH} && echo "fetching ${BRANCH} from ${{env.CLONE_URL}}"
             cd ${BRANCH}
-            echo \"Changed directory to ${BRANCH}.\"
+            echo "Changed directory to ${BRANCH}."
 
             git fetch --all --verbose 
             git reset --hard origin/${BRANCH}
-            echo \"Git fetch and reset complete.\"
+            echo "Git fetch and reset complete."
 
             ### Update clash_config
             wget -O ./config/clash_config.yaml ${{secrets.CLASH_CONFIG_URL}}
 
             ### Build and run docker
 
-            export IMAGE_NAME=$(echo ${IMAGE_NAME} | tr '[:upper:]' '[:lower:]')
-            echo \"Updating ${IMAGE_NAME} service...\"
+            IMAGE_NAME=$(echo ${IMAGE_NAME} | tr '[:upper:]' '[:lower:]')
+            echo "Updating ${IMAGE_NAME} service..."
             docker compose down
             docker compose up -d --build
-            echo \"start listening on ${EXPOSED_PORT}\"
+            echo "start listening on ${EXPOSED_PORT}"
             docker image prune -f
         
-            
-            # this is the close of previous bash -l -c 
-            `
+            # this code is the close of previous bash -l -c 
+            EOF
+            )"
