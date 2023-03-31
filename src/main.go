@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 
 	cache "github.com/chenyahui/gin-cache"
@@ -53,10 +54,9 @@ func proxyHandler(context *gin.Context) {
 
 // send file *os.File -> context *gin.Context
 func sendFile(res *http.Response, c *gin.Context) {
-
-	extraHeaders := map[string]string{
-		//"Content-Disposition": `inline;
-		//filename=` + file.Name(),
+	extraHeaders := make(map[string]string)
+	for key, values := range res.Header {
+		extraHeaders[key] = strings.Join(values, ", ")
 	}
 	c.DataFromReader(http.StatusOK, res.ContentLength, res.Header.Get("content-type"), res.Body, extraHeaders)
 }
