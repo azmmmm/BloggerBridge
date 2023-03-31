@@ -6,21 +6,12 @@ import (
 	"net/url"
 	"time"
 
-	"sync"
-
 	"izumi.pro/wrapper/src/pkg/config"
 )
 
-var once sync.Once
+var singletonProxyClient *http.Client
 
-var singleInstance *http.Client
-
-func Get() *http.Client {
-	once.Do(register)
-	return singleInstance
-}
-
-func register() {
+func init() {
 	conf := config.Get()
 
 	proxyUrl, err := url.Parse(conf["proxy"].(string))
@@ -29,7 +20,17 @@ func register() {
 	}
 	proxyClient := &http.Client{
 		Transport: &http.Transport{Proxy: http.ProxyURL(proxyUrl)},
-		Timeout:   10 * time.Second}
+		Timeout:   15 * time.Second}
 
-	singleInstance = proxyClient
+	singletonProxyClient = proxyClient
+}
+
+func FetchByProxy(url string) (*http.Response, error) {
+	res, err := singletonProxyClient.Get(url)
+	if err != nil {
+		log.Print(err)
+		return nil, err
+	}
+	log.Printf("[%v] Proxy fetching %s", res.StatusCode, url)
+	return res, nil
 }
