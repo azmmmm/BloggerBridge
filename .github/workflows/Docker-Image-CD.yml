@@ -8,12 +8,9 @@ jobs:
     runs-on:  ubuntu-latest
     env:
       CLONE_URL: https://github.com/${{github.repository}}.git
-
-
       BRANCH: ${{ github.ref_name }}
-      EXPOSED_PORT: ${{vars.EXPOSED_PORT || 8085}}
       IMAGE_NAME: ${{github.repository}}
-
+      EXPOSED_PORT: ${{ (github.ref == 'refs/heads/main') && '8085' || '8086' }}
     steps:
       - name: Get repository meta info.
         id: meta
