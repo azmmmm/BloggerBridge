@@ -11,7 +11,7 @@ jobs:
 
 
       BRANCH: ${{ github.ref_name }}
-      EXPOSED_PORT: ${{vars.EXPOSED_PORT || 8085}}
+      EXPOSED_PORT: ${{vars.EXPOSED_PORT}}
       IMAGE_NAME: ${{github.repository}}
 
     steps:
