@@ -10,7 +10,7 @@ jobs:
       CLONE_URL: https://github.com/${{github.repository}}.git
       BRANCH: ${{ github.ref_name }}
       IMAGE_NAME: ${{github.repository}}
-    environment: ${{ (github.ref == 'refs/heads/main') && 'main' || 'dev' }}
+      EXPOSED_PORT: ${{ (github.ref == 'refs/heads/main') && '8085' || '8086' }}
     steps:
       - name: Get repository meta info.
         id: meta
