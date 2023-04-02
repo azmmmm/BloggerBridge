@@ -5,7 +5,6 @@ import (
 	"log"
 	"net/http"
 	"strconv"
-	"strings"
 	"time"
 
 	cache "github.com/chenyahui/gin-cache"
@@ -26,6 +25,7 @@ func main() {
 	}))
 
 	route := gin.Default()
+
 	route.GET("/", func(c *gin.Context) {
 		c.String(200, "hello world 2023/3/31")
 	})
@@ -52,12 +52,7 @@ func proxyHandler(context *gin.Context) {
 
 }
 
-// send file *os.File -> context *gin.Context
 func sendFile(res *http.Response, c *gin.Context) {
 	extraHeaders := make(map[string]string)
-	for key, values := range res.Header {
-		extraHeaders[key] = strings.Join(values, ", ")
-	}
-	log.Print(extraHeaders)
 	c.DataFromReader(http.StatusOK, res.ContentLength, res.Header.Get("content-type"), res.Body, extraHeaders)
 }

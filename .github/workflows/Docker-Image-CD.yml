@@ -59,6 +59,7 @@ jobs:
 
             export IMAGE_NAME=$(echo ${IMAGE_NAME} | tr '[:upper:]' '[:lower:]')
             echo "Updating ${IMAGE_NAME} service..."
+            docker compose pull url-wrapper
             docker compose down
             docker compose up -d --build
             echo "start listening on ${EXPOSED_PORT}"
