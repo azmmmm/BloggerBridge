@@ -13,7 +13,6 @@ import (
 	"github.com/go-redis/redis/v8"
 	"izumi.pro/wrapper/src/pkg/config"
 	"izumi.pro/wrapper/src/pkg/proxy"
-	"izumi.pro/wrapper/src/pkg/resource"
 )
 
 var TEST_CN_FLAG = true
@@ -26,8 +25,9 @@ func main() {
 	}))
 
 	route := gin.Default()
+
 	route.GET("/", func(c *gin.Context) {
-		c.String(200, "hello world")
+		c.String(200, "hello world 2023/3/31")
 	})
 
 	route.GET("/proxy/*path",
@@ -44,7 +44,7 @@ func proxyHandler(context *gin.Context) {
 	urlBytes, _ := base64.StdEncoding.DecodeString(resUrl)
 	resUrl = string(urlBytes)
 
-	res, err := resource.FetchByProxy(proxy.Get(), resUrl)
+	res, err := proxy.FetchByProxy(resUrl)
 	if err != nil {
 		log.Println("Error:", err)
 	}
@@ -52,12 +52,7 @@ func proxyHandler(context *gin.Context) {
 
 }
 
-// send file *os.File -> context *gin.Context
 func sendFile(res *http.Response, c *gin.Context) {
-
-	extraHeaders := map[string]string{
-		//"Content-Disposition": `inline;
-		//filename=` + file.Name(),
-	}
+	extraHeaders := make(map[string]string)
 	c.DataFromReader(http.StatusOK, res.ContentLength, res.Header.Get("content-type"), res.Body, extraHeaders)
 }

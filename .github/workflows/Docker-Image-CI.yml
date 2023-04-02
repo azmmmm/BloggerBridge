@@ -16,6 +16,7 @@ on:
       - 'LICENSE'
       - 'README.md'
       - 'docker-compose.yaml'  
+      - 'src/Gadget.html' 
   pull_request:
     branches: [ "main","dev" ]
   workflow_dispatch:
