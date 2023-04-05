@@ -9,8 +9,10 @@ import (
 
 	cache "github.com/chenyahui/gin-cache"
 	"github.com/chenyahui/gin-cache/persist"
+	"github.com/gin-contrib/gzip"
 	"github.com/gin-gonic/gin"
 	"github.com/go-redis/redis/v8"
+	cachecontrol "github.com/joeig/gin-cachecontrol/v2"
 	"izumi.pro/wrapper/src/pkg/config"
 	"izumi.pro/wrapper/src/pkg/proxy"
 )
@@ -30,8 +32,28 @@ func main() {
 		c.String(200, "hello world 2023/3/31")
 	})
 
+	route.Use(gzip.Gzip(gzip.DefaultCompression))
+
+	const Year = 365 * 24 * time.Hour
+	route.Use(cachecontrol.New(cachecontrol.Config{
+		MustRevalidate:       false,
+		NoCache:              false,
+		NoStore:              false,
+		NoTransform:          false,
+		Public:               true,
+		Private:              false,
+		ProxyRevalidate:      true,
+		MaxAge:               cachecontrol.Duration(Year),
+		SMaxAge:              nil,
+		Immutable:            true,
+		StaleWhileRevalidate: cachecontrol.Duration(2 * time.Hour),
+		StaleIfError:         cachecontrol.Duration(2 * time.Hour),
+	}))
+
+	route.Use(cache.CacheByRequestPath(redisStore, 30*24*time.Hour))
+
 	route.GET("/proxy/*path",
-		cache.CacheByRequestPath(redisStore, 30*24*time.Hour),
+
 		proxyHandler,
 	)
 

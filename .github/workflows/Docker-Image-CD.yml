@@ -63,7 +63,7 @@ jobs:
             docker compose down
             docker compose up -d --build
             echo "start listening on ${EXPOSED_PORT}"
-            docker image prune -f
+            
         
             # this code is the close of previous bash -l -c 
             EOF
