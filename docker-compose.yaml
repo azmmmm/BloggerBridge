@@ -19,7 +19,7 @@ services:
   url-wrapper:
     container_name: url-wrapper_${BRANCH}
     image: ghcr.io/${IMAGE_NAME}:${BRANCH}
-
+    restart: unless-stopped
     ports:
       - "${EXPOSED_PORT}:8085"
     networks:
